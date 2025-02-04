@@ -6,19 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Set;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(value = "user")
-public class User {
+@Document(value = "booking")
+public class Booking {
     @Id
     private String id;
-    private String name;
-    private String password;
-    private String email;
-    private Set<RoleType> roles;
+    @Field(name = "move_in_date")
+    private LocalDate moveInDate;
+    @Field(name = "move_out_date")
+    private LocalDate moveOutDate;
+    private Room room;
+    private User user;
 }

@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -26,10 +26,10 @@ public class Room {
     @Field(name = "maximum_guests_capacity")
     private Integer maximumGuestsCapacity;
     @Field(name = "already_booked_dates")
-    private Set<LocalDateTime> alreadyBookedDates;
+    private Set<LocalDate> alreadyBookedDates;
     private Hotel hotel;
 
-    public void addBookedDate(LocalDateTime date){
+    public void addBookedDate(LocalDate date){
         alreadyBookedDates.add(date);
     }
 }

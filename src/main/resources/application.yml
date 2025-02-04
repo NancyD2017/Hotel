@@ -5,5 +5,7 @@ spring:
       database: admin
 
 app:
-  security:
-    type: db
+  jwt:
+    secret: "SomeSecretKeyoidhujh9jkoi9ydhuj534nh89jjnhs7xvjmhziklogjmmskmrpojksgns8ejHUYhfnnbythbfhjz7lUHNN89f79gin58ujmgnbn"
+    tokenExpiration: 100m
+    refreshTokenExpiration: 10000m
