@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongo:mongo@localhost:5433/admin
+      database: admin
+
+app:
+  security:
+    type: db
