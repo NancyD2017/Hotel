@@ -17,7 +17,7 @@ public class Hotel {
     private String header;
     private String city;
     private String address;
-    @Field(name = "city_center_distance Привет Насте")
+    @Field(name = "city_center_distance")
     private Double cityCenterDistance;
     private Double rating;
     private Integer reviews;
