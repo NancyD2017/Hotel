@@ -12,6 +12,11 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookingMapper {
     Booking requestToBooking(UpsertBookingRequest request);
-    BookingListResponse bookingsToResponse(List<Booking> booking);
+    default BookingListResponse bookingsToResponse(List<Booking> bookings){
+        BookingListResponse bookingListResponse = new BookingListResponse();
+        bookingListResponse.setBookings(bookingListToResponseList(bookings));
+        return bookingListResponse;
+    }
+    List<BookingResponse> bookingListToResponseList(List<Booking> bookingList);
     BookingResponse bookingToResponse(Booking booking);
 }

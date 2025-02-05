@@ -9,23 +9,24 @@ import com.example.demo.web.model.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/booking")
 @RequiredArgsConstructor
 public class BookingController {
-
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
 
     @GetMapping
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<BookingListResponse> findAll() {
         return ResponseEntity.ok(bookingMapper.bookingsToResponse(bookingService.findAll()));
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<?> createBooking(@RequestBody UpsertBookingRequest request) {
         Booking booking = bookingService.save(bookingMapper.requestToBooking(request));
         return (booking == null) ?

@@ -22,6 +22,7 @@ public class Booking {
     private LocalDate moveInDate;
     @Field(name = "move_out_date")
     private LocalDate moveOutDate;
+    private String roomId;
     private Room room;
     private User user;
 }

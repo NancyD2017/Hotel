@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -26,10 +27,11 @@ public class Room {
     @Field(name = "maximum_guests_capacity")
     private Integer maximumGuestsCapacity;
     @Field(name = "already_booked_dates")
-    private Set<LocalDate> alreadyBookedDates;
+    private Set<LocalDate> alreadyBookedDates =  new HashSet<>();
+    private String hotelId;
     private Hotel hotel;
 
-    public void addBookedDate(LocalDate date){
-        alreadyBookedDates.add(date);
+    public void addBookedDates(Set<LocalDate> dates){
+        alreadyBookedDates.addAll(dates);
     }
 }

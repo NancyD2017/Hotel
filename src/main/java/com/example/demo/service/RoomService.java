@@ -1,9 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Hotel;
 import com.example.demo.entity.Room;
+import com.example.demo.repository.HotelRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.utils.BeanUtils;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,26 @@ import java.util.Optional;
 @Slf4j
 public class RoomService {
     private final RoomRepository roomRepository;
-    public Optional<Room> findById(String id) throws EntityNotFoundException {
+    private final HotelRepository hotelRepository;
+    public Optional<Room> findById(String id) throws TypeNotPresentException {
         return roomRepository.findById(id);
     }
     public Room save(Room room){
-        return roomRepository.save(room);
+        if (room.getHotelId() != null) {
+            Optional<Hotel> hotel = hotelRepository.findById(room.getHotelId());
+            if (hotel.isPresent()) {
+                room.setHotel(hotel.get());
+                return roomRepository.save(room);
+            }
+        }
+        return null;
     }
     public Room update(String id, Room room){
         Optional<Room> existedRoom = findById(id);
         if (existedRoom.isPresent()) {
-            BeanUtils.copyNonNullProperties(room, existedRoom);
-            //TODO проверить, что старые даты не исчезают
-            return roomRepository.save(room);
+            Room existingRoom = existedRoom.get();
+            BeanUtils.copyNonNullProperties(room, existingRoom);
+            return roomRepository.save(existingRoom);
         }
         else return null;
     }

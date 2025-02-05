@@ -1,5 +1,6 @@
 package com.example.demo.web.controller;
 
+import com.example.demo.entity.RoleType;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.UserService;
@@ -8,20 +9,21 @@ import com.example.demo.web.model.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
     private final UserMapper userMapper;
 
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<?> findById(@PathVariable String id) {
         Optional<User> user = userService.findById(id);
         return user.isPresent()
@@ -32,6 +34,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UpsertUserRequest request) {
+        Set<RoleType> roles = request.getRoles();
+        if (roles == null || (!roles.contains(RoleType.ROLE_MANAGER) && !roles.contains(RoleType.ROLE_USER)))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("User must have some roles"));
         return userService.existsByNameAndEmail(request.getName(), request.getEmail()) ?
                 ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(
@@ -43,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<?> updateUser(@RequestBody UpsertUserRequest request,
                                         @PathVariable String id) {
         User updatedUser = userService.update(id, userMapper.requestToUser(request));
@@ -54,10 +59,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String id) {
         userService.deleteById(id);
     }
 
+//    @DeleteMapping("/deleteAll") //Да, этот метод не прописан в тз, но он очень удобный :-)
+//    @PreAuthorize("hasRole('ROLE_MANAGER')")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void delete() {
+//        bookingService.findAll().forEach(b -> bookingService.de);
+//        roomService.findAll()
+//        hotelService.findAll()
+//
+//        userService.findAll().forEach(u -> userService.deleteById(u.getId()));
+//    }
 }

@@ -1,6 +1,5 @@
 package com.example.demo.web.model.request;
 
-import com.example.demo.entity.Hotel;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,5 +13,5 @@ public class UpsertRoomRequest {
     private Double price;
     private Integer maximumGuestsCapacity;
     private Set<Date> alreadyBookedDates;
-    private Hotel hotel;
+    private String hotelId;
 }

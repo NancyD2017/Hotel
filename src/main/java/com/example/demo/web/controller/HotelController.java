@@ -10,6 +10,7 @@ import com.example.demo.web.model.response.HotelResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -23,12 +24,12 @@ public class HotelController {
     private final HotelMapper hotelMapper;
 
     @GetMapping
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<HotelListResponse> findAll() {
         return ResponseEntity.ok(hotelMapper.hotelsToResponse(hotelService.findAll()));
     }
 
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable String id) {
         Optional<Hotel> hotel = hotelService.findById(id);
@@ -39,6 +40,7 @@ public class HotelController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<HotelResponse> createHotel(@RequestBody UpsertHotelRequest request) {
         return ResponseEntity.ok(
                 hotelMapper.hotelToResponse(
@@ -50,7 +52,7 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> updateHotel(@RequestBody UpsertHotelRequest request,
                                          @PathVariable String id) {
         Hotel updatedHotel = hotelService.update(id, hotelMapper.requestToHotel(request));
@@ -61,7 +63,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteHotel(@PathVariable String id) {
         hotelService.deleteById(id);

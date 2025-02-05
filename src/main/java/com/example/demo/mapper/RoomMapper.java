@@ -8,10 +8,7 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RoomMapper {
-
     RoomResponse roomToResponse(Room room);
-
     UpsertRoomRequest roomToRequest(Room room);
     Room requestToRoom(UpsertRoomRequest request);
-
 }

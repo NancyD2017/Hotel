@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(value = "user")
+@Document(value = "users")
 public class User {
     @Id
     private String id;

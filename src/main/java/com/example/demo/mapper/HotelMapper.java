@@ -14,7 +14,12 @@ public interface HotelMapper {
 
     HotelResponse hotelToResponse(Hotel hotel);
 
-    HotelListResponse hotelsToResponse(List<Hotel> hotels);
+    default HotelListResponse hotelsToResponse(List<Hotel> hotels){
+        HotelListResponse hotelListResponse = new HotelListResponse();
+        hotelListResponse.setHotels(hotelListToResponseList(hotels));
+        return hotelListResponse;
+    }
+    List<HotelResponse> hotelListToResponseList(List<Hotel> hotelList);
 
     Hotel requestToHotel(UpsertHotelRequest request);
 

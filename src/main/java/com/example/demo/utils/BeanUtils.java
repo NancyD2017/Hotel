@@ -17,7 +17,9 @@ public class BeanUtils {
             Object value = field.get(source);
 
             if (value != null){
-                field.set(destination, value);
+                Field destField = destination.getClass().getDeclaredField(field.getName());
+                destField.setAccessible(true);
+                destField.set(destination, value);
             }
         }
     }
