@@ -27,6 +27,7 @@ public class Room {
     @Field(name = "maximum_guests_capacity")
     private Integer maximumGuestsCapacity;
     @Field(name = "already_booked_dates")
+    @Builder.Default
     private Set<LocalDate> alreadyBookedDates =  new HashSet<>();
     private String hotelId;
     private Hotel hotel;

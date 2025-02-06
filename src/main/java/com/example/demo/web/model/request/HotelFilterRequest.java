@@ -1,14 +1,10 @@
-package com.example.demo.web.model.response;
+package com.example.demo.web.model.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class HotelResponse {
-    private String id;
+public class HotelFilterRequest {
+    private String hotelId;
     private String name;
     private String header;
     private String city;

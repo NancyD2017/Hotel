@@ -19,6 +19,8 @@ public class Hotel {
     private String address;
     @Field(name = "city_center_distance")
     private Double cityCenterDistance;
-    private Double rating;
-    private Integer reviews;
+    @Builder.Default
+    private Double rating = 0.0;
+    @Builder.Default
+    private Integer numberOfRating = 0;
 }
