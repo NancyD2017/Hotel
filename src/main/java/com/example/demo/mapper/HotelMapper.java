@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.entity.Hotel;
 import com.example.demo.web.model.request.UpsertHotelRequest;
 import com.example.demo.web.model.response.HotelListResponse;
+import com.example.demo.web.model.response.HotelPageResponse;
 import com.example.demo.web.model.response.HotelResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -22,5 +23,11 @@ public interface HotelMapper {
     List<HotelResponse> hotelListToResponseList(List<Hotel> hotelList);
 
     Hotel requestToHotel(UpsertHotelRequest request);
+    default HotelPageResponse hotelListResponseToPageResponse(HotelListResponse hotelListResponse){
+        HotelPageResponse pr = new HotelPageResponse();
+        pr.setHotelListResponse(hotelListResponse);
+        pr.setEntityNumber(hotelListResponse.getHotels().size());
+        return pr;
+    }
 
 }

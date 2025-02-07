@@ -2,13 +2,18 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Hotel;
 import com.example.demo.entity.Room;
+import com.example.demo.filter.RoomFilter;
+import com.example.demo.filter.RoomSpecification;
 import com.example.demo.repository.HotelRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +22,7 @@ import java.util.Optional;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
+    private final MongoTemplate mongoTemplate;
     public Optional<Room> findById(String id) throws TypeNotPresentException {
         return roomRepository.findById(id);
     }
@@ -41,5 +47,10 @@ public class RoomService {
     }
     public void deleteById(String id){
         roomRepository.deleteById(id);
+    }
+    public List<Room> filterBy(RoomFilter filter, int pageSize, int pageNumber){
+        Query query = RoomSpecification.withFilter(filter);
+        query.skip((long) pageNumber * pageSize).limit(pageSize);
+        return mongoTemplate.find(query, Room.class);
     }
 }

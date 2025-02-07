@@ -3,7 +3,6 @@ package com.example.demo.web.controller;
 import com.example.demo.entity.Hotel;
 import com.example.demo.filter.HotelFilter;
 import com.example.demo.mapper.HotelMapper;
-import com.example.demo.mapper.PageMapper;
 import com.example.demo.service.HotelService;
 import com.example.demo.web.model.request.HotelFilterRequest;
 import com.example.demo.web.model.request.PageRequest;
@@ -12,9 +11,7 @@ import com.example.demo.web.model.request.UpsertRateRequest;
 import com.example.demo.web.model.response.ErrorResponse;
 import com.example.demo.web.model.response.HotelListResponse;
 import com.example.demo.web.model.response.HotelResponse;
-import com.example.demo.web.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,19 +26,38 @@ public class HotelController {
 
     private final HotelService hotelService;
     private final HotelMapper hotelMapper;
-    private final PageMapper pageMapper;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<HotelListResponse> findAll() {
         return ResponseEntity.ok(hotelMapper.hotelsToResponse(hotelService.findAll()));
     }
+
+    @GetMapping("/filter")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+    public ResponseEntity<HotelListResponse> filterBy(@RequestBody HotelFilterRequest filter) {
+        HotelFilter hotelFilter = new HotelFilter();
+
+        if (filter.getHotelId() != null) hotelFilter.setHotelId(filter.getHotelId());
+        if (filter.getName() != null) hotelFilter.setName(filter.getName());
+        if (filter.getHeader() != null) hotelFilter.setHeader(filter.getHeader());
+        if (filter.getCity() != null) hotelFilter.setCity(filter.getCity());
+        if (filter.getAddress() != null) hotelFilter.setAddress(filter.getAddress());
+        if (filter.getCityCenterDistance() != null) hotelFilter.setCityCenterDistance(filter.getCityCenterDistance());
+        if (filter.getRating() != null) hotelFilter.setRating(filter.getRating());
+        if (filter.getNumberOfRating() != null) hotelFilter.setNumberOfRating(filter.getNumberOfRating());
+
+        return ResponseEntity.ok(
+                hotelMapper.hotelsToResponse(hotelService.filterBy(hotelFilter))
+        );
+    }
+
     @GetMapping("/page")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<?> findAllPages(@RequestBody PageRequest pageRequest) {
         return (pageRequest.getPageSize() > 0 && pageRequest.getPageNumber() >= 0)
                 ? ResponseEntity.ok(
-                pageMapper.hotelListResponseToPageResponse(
+                hotelMapper.hotelListResponseToPageResponse(
                 hotelMapper.hotelsToResponse(
                         hotelService.findAllPages(pageRequest.getPageNumber(), pageRequest.getPageSize()
                         ))))
@@ -99,24 +115,5 @@ public class HotelController {
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("Hotel with id " + request.getHotelId() + " not found"))
                 : ResponseEntity.ok(hotelMapper.hotelToResponse(ratedHotel));
-    }
-
-    @GetMapping("/filter")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-    public ResponseEntity<HotelListResponse> filterBy(@RequestBody HotelFilterRequest filter) {
-        HotelFilter newsFilter = new HotelFilter();
-
-        if (filter.getHotelId() != null) newsFilter.setHotelId(filter.getHotelId());
-        if (filter.getName() != null) newsFilter.setName(filter.getName());
-        if (filter.getHeader() != null) newsFilter.setHeader(filter.getHeader());
-        if (filter.getCity() != null) newsFilter.setCity(filter.getCity());
-        if (filter.getAddress() != null) newsFilter.setAddress(filter.getAddress());
-        if (filter.getCityCenterDistance() != null) newsFilter.setCityCenterDistance(filter.getCityCenterDistance());
-        if (filter.getRating() != null) newsFilter.setRating(filter.getRating());
-        if (filter.getNumberOfRating() != null) newsFilter.setNumberOfRating(filter.getNumberOfRating());
-
-        return ResponseEntity.ok(
-                hotelMapper.hotelsToResponse(hotelService.filterBy(newsFilter))
-        );
     }
 }
