@@ -1,13 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Booking;
-import com.example.demo.entity.Room;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +27,9 @@ public class BookingService {
     private final RoomService roomService;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    @Value("${app.kafka.kafkaBooking}")
+    private String topicName;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     public List<Booking> findAll(){
         return bookingRepository.findAll();
     }
@@ -40,6 +43,7 @@ public class BookingService {
             } else return null;
             booking.setUser(user.get());
         } else return null;
+
         Set<LocalDate> alreadyBookedDates = booking.getRoom().getAlreadyBookedDates();
         Set<LocalDate> desiredDates = new HashSet<>();
         LocalDate firstDate = booking.getMoveInDate();
@@ -54,6 +58,14 @@ public class BookingService {
         }
         room.get().addBookedDates(desiredDates);
         roomService.update(room.get().getId(), room.get());
+        Booking kbs = bookingRepository.save(booking);
+        KafkaBooking kb = new KafkaBooking();
+        kb.setUserId(booking.getUser().getId());
+        kb.setMoveInDate(booking.getMoveInDate());
+        kb.setMoveOutDate(booking.getMoveOutDate());
+        kb.setId(kbs.getId());
+        kafkaTemplate.send(topicName, kb);
+
         return bookingRepository.save(booking);
     }
     private String findUserId() {

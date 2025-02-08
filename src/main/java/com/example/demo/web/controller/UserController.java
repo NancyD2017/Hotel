@@ -64,15 +64,4 @@ public class UserController {
     public void deleteUser(@PathVariable String id) {
         userService.deleteById(id);
     }
-
-//    @DeleteMapping("/deleteAll") //Да, этот метод не прописан в тз, но он очень удобный :-)
-//    @PreAuthorize("hasRole('ROLE_MANAGER')")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void delete() {
-//        bookingService.findAll().forEach(b -> bookingService.de);
-//        roomService.findAll()
-//        hotelService.findAll()
-//
-//        userService.findAll().forEach(u -> userService.deleteById(u.getId()));
-//    }
 }

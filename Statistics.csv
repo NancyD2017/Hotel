@@ -1,0 +1,6 @@
+KafkaUser(id=67a720ec1e6941130b9d1779)
+KafkaUser(id=67a721171e6941130b9d177b)
+KafkaUser(id=67a7212f1e6941130b9d177c)
+KafkaBooking(id=67a37a41586d602662573b45, userId=null, moveInDate=2029-03-01, moveOutDate=2029-03-10)
+KafkaBooking(id=67a72554ebd59f032a9e8ad6, userId=67a37a41586d602662573b45, moveInDate=2029-03-01, moveOutDate=2029-03-10)
+KafkaBooking(id=67a72561ebd59f032a9e8ad7, userId=67a37a41586d602662573b45, moveInDate=2029-04-01, moveOutDate=2029-04-10)
