@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/api/booking")
 @RequiredArgsConstructor
@@ -28,13 +30,14 @@ public class BookingController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<?> createBooking(@RequestBody UpsertBookingRequest request) {
-        Booking booking = bookingService.save(bookingMapper.requestToBooking(request));
-        return (booking == null) ?
-                ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ErrorResponse(
-                                "Booking for dates between " + request.getMoveInDate() +
-                                        " and " + request.getMoveOutDate() + " is impossible"))
-                : ResponseEntity.ok(bookingMapper.bookingToResponse(booking));
+        try {
+            Booking booking = bookingService.save(bookingMapper.requestToBooking(request));
+            return ResponseEntity.ok(bookingMapper.bookingToResponse(booking));
+        } catch (IllegalArgumentException | NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(e.getMessage()));
+        }
     }
 
 }

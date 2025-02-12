@@ -13,11 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.management.InstanceNotFoundException;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +38,9 @@ public class BookingService {
             room = roomRepository.findById(booking.getRoomId());
             if (room.isPresent()) {
                 booking.setRoom(room.get());
-            } else return null;
+            } else throw new NoSuchElementException("Enter correct roomId");
             booking.setUser(user.get());
-        } else return null;
+        } else throw new IllegalArgumentException("You entered incorrect roomId");
 
         Set<LocalDate> alreadyBookedDates = booking.getRoom().getAlreadyBookedDates();
         Set<LocalDate> desiredDates = new HashSet<>();
@@ -54,10 +52,15 @@ public class BookingService {
         if (alreadyBookedDates != null) {
             Set<LocalDate> checkDates = new HashSet<>(alreadyBookedDates);
             checkDates.retainAll(desiredDates);
-            if (!checkDates.isEmpty()) return null;
+            if (!checkDates.isEmpty()) throw new IllegalArgumentException("Booking for dates between "
+                    + booking.getMoveInDate() + " and " + booking.getMoveOutDate() + " is impossible");
         }
         room.get().addBookedDates(desiredDates);
-        roomService.update(room.get().getId(), room.get());
+        try {
+            roomService.update(room.get().getId(), room.get());
+        } catch (InstanceNotFoundException e){
+            throw new RuntimeException("Internal error");
+        }
         Booking kbs = bookingRepository.save(booking);
         StatisticsBooking kb = new StatisticsBooking();
         kb.setUserId(booking.getUser().getId());
