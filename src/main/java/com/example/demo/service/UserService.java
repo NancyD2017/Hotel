@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.KafkaUser;
+import com.example.demo.entity.StatisticsUser;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utils.BeanUtils;
@@ -31,7 +31,7 @@ public class UserService {
     public User save(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        kafkaTemplate.send(topicName, new KafkaUser(savedUser.getId()));
+        kafkaTemplate.send(topicName, new StatisticsUser(savedUser.getId()));
         return savedUser;
     }
     public User update(String id, User user){

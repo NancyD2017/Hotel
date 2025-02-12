@@ -108,9 +108,9 @@ public class HotelController {
     @PutMapping("/rate")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public ResponseEntity<?> rateHotel(@RequestBody UpsertRateRequest request) {
-        Hotel ratedHotel = hotelService.rate(request.getHotelId(), request.getNewMark());
         if (request.getNewMark() > 5 || request.getNewMark() < 1) return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("Rate the hotel with mark 1, 2, 3, 4 or 5"));
+        Hotel ratedHotel = hotelService.rate(request.getHotelId(), request.getNewMark());
         return (ratedHotel == null)
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("Hotel with id " + request.getHotelId() + " not found"))

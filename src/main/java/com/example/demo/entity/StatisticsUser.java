@@ -1,17 +1,14 @@
 package com.example.demo.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
-
 @Data
-@Document(collection = "bookingsKafka")
-public class KafkaBooking {
+@AllArgsConstructor
+@Document(collection = "usersStatistics")
+public class StatisticsUser {
     @Id
     private String id;
-    private String userId;
-    private LocalDate moveInDate;
-    private LocalDate moveOutDate;
 }

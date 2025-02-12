@@ -59,7 +59,7 @@ public class BookingService {
         room.get().addBookedDates(desiredDates);
         roomService.update(room.get().getId(), room.get());
         Booking kbs = bookingRepository.save(booking);
-        KafkaBooking kb = new KafkaBooking();
+        StatisticsBooking kb = new StatisticsBooking();
         kb.setUserId(booking.getUser().getId());
         kb.setMoveInDate(booking.getMoveInDate());
         kb.setMoveOutDate(booking.getMoveOutDate());

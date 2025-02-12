@@ -1,7 +1,7 @@
 package com.example.demo.kafka;
 
-import com.example.demo.entity.KafkaBooking;
-import com.example.demo.entity.KafkaUser;
+import com.example.demo.entity.StatisticsBooking;
+import com.example.demo.entity.StatisticsUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -43,7 +43,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, KafkaUser> kafkaUserConsumerFactory(ObjectMapper objectMapper) {
+    public ConsumerFactory<String, StatisticsUser> kafkaUserConsumerFactory(ObjectMapper objectMapper) {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -51,23 +51,23 @@ public class KafkaConfiguration {
         config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaUserGroupId);
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        JsonDeserializer<KafkaUser> deserializer = new JsonDeserializer<>(KafkaUser.class, objectMapper);
-        deserializer.addTrustedPackages("com.example.demo.entity");  // Оставляем только этот способ
+        JsonDeserializer<StatisticsUser> deserializer = new JsonDeserializer<>(StatisticsUser.class, objectMapper);
+        deserializer.addTrustedPackages("com.example.demo.entity");
 
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaUser> kafkaUserListenerContainerFactory(
-            ConsumerFactory<String, KafkaUser> kafkaUserConsumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaUser> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, StatisticsUser> kafkaUserListenerContainerFactory(
+            ConsumerFactory<String, StatisticsUser> kafkaUserConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, StatisticsUser> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaUserConsumerFactory);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, KafkaBooking> kafkaBookingConsumerFactory(ObjectMapper objectMapper) {
+    public ConsumerFactory<String, StatisticsBooking> kafkaBookingConsumerFactory(ObjectMapper objectMapper) {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -75,16 +75,16 @@ public class KafkaConfiguration {
         config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaUserGroupId);
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        JsonDeserializer<KafkaBooking> deserializer = new JsonDeserializer<>(KafkaBooking.class, objectMapper);
-        deserializer.addTrustedPackages("com.example.demo.entity");  // Только здесь
+        JsonDeserializer<StatisticsBooking> deserializer = new JsonDeserializer<>(StatisticsBooking.class, objectMapper);
+        deserializer.addTrustedPackages("com.example.demo.entity");
 
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaBooking> kafkaBookingListenerContainerFactory(
-            ConsumerFactory<String, KafkaBooking> kafkaBookingConsumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaBooking> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, StatisticsBooking> kafkaBookingListenerContainerFactory(
+            ConsumerFactory<String, StatisticsBooking> kafkaBookingConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, StatisticsBooking> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaBookingConsumerFactory);
         return factory;
