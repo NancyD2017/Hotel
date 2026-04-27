@@ -4,19 +4,6 @@ A full-featured **REST API backend** for hotel management — covering hotels, r
 
 ---
 
-## Screenshots
-
-<!-- Screenshot: Swagger UI overview showing all available API endpoints grouped by controller (User, Hotel, Room, Booking, Statistics) -->
-![Swagger UI](docs/swagger-ui.png)
-
-<!-- Screenshot: Example API response for hotel search with filters (city, rating, distance from center) — show JSON response body in Postman or similar tool -->
-![Hotel Search Response](docs/hotel-search.png)
-
-<!-- Screenshot: CSV statistics export file opened in Excel or similar, showing booking and registration event rows -->
-![Statistics Export](docs/statistics-export.png)
-
----
-
 ## Features
 
 ### User Management
